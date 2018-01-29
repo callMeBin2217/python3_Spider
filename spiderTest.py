@@ -78,7 +78,7 @@ try:
 	for item in items:
 		pageLibrary.append([item[0].strip(),item[1].strip()])
 		print(item[0].strip(),item[1].strip())
-		print(pageLibrary)
+		#print(pageLibrary)
 except urllib.request.URLError as e:
 	if hasattr(e,'code'):
 		print(e.code)
