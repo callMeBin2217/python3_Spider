@@ -138,7 +138,7 @@ class bdtbSpider(object):
 			print('该帖子共'+str(pageNum)+'页')
 			#循环加载所有页面
 			for i in range(1,int(pageNum)+1):
-				print('正则写入第'+str(i)+'页数据')
+				print('正在写入第'+str(i)+'页数据')
 				page = self.getPage(i)
 				contents = self.getCurrentPageContent(page)
 				self.writeData(contents)
@@ -150,7 +150,7 @@ class bdtbSpider(object):
 
 
 
-baseUrl = r'https://tieba.baidu.com/p/2687476192'
+baseUrl = r'https://tieba.baidu.com/p/5532563363'
 spider_bdtb = bdtbSpider(baseUrl,0)
 spider_bdtb.start()
 
