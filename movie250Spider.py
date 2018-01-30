@@ -10,6 +10,7 @@
 import requests
 from bs4 import BeautifulSoup
 import codecs
+import re
 
 BASE_URL = r'http://movie.douban.com/top250/'
 
@@ -41,8 +42,12 @@ def getContent(data):
 			movie_comment = detail.find('span',attrs={'class':'inq'}).getText()
 		else:
 			movie_comment = 'None Comment'
+		#取出上映时间、发行国家、电影类型、导演等
+		movie_info = detail.find('p',attrs={'class':""}).getText().strip()
+		movie_info = movie_info.replace("<br>","")
+
 		#把四项信息组成一个tuple，传入libaray
-		data_tuple = (movie_name,movie_score,movie_url,movie_comment)
+		data_tuple = (movie_name,movie_score,movie_url,movie_comment,movie_info)
 		libaray.append(data_tuple)
 
 	#进入下一页
@@ -61,7 +66,7 @@ def main():
 			data = getPage(url)
 			informations,url = getContent(data)
 			for item in informations:
-				info_str = "电影名称: %s \r\n 电影评分: %s \r\n 地址: %s \r\n 简介: %s \r\n"%(item[0],item[1],item[2],item[3])
+				info_str = "电影名称: %s \r\n电影评分: %s \r\n地址: %s \r\n简介: %s \r\n%s \r\n"%(item[0],item[1],item[2],item[3],item[4])
 				try:
 					fp.write(info_str+'\r\n')
 				except IOError as e:
