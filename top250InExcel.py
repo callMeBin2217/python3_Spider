@@ -10,10 +10,8 @@ import requests
 from bs4 import BeautifulSoup
 import codecs
 import re
-#excel需要用到的两个模块
+#excel需要用到的模块
 import xlwt
-import xlrd
-import os
 
 BASE_URL = r'http://movie.douban.com/top250/'
 
@@ -62,6 +60,7 @@ def getContent(data):
 
 	#把数据保存到excel
 def saveToExcel(informations):
+	#记录行数
 	i=1
 	#创建一个excel
 	file_excel = xlwt.Workbook(encoding='utf-8',style_compression=0)
@@ -71,8 +70,6 @@ def saveToExcel(informations):
 	#生成第一行
 	for j in range(0,len(index)):
 		sheet.write(0,j,index[j])
-	#获取数据组的长度
-	data_length = len(informations)
 	#填充数据
 	for item in informations:
 		for j in range(0,len(item)):
@@ -92,6 +89,9 @@ def main():
 		informations,url = getContent(data)
 		for item in informations:
 			pool.append(item)
+	'''这里需要把数据一次过导入excel,所以增加pool变量提前把所有250条信息保存起来，再一次导入
+		不然，像movie250Spider.py那样一页一页导入就会被覆盖
+	'''
 	saveToExcel(pool)
 
 
