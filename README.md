@@ -21,3 +21,4 @@ Learn Python3 also have a period of time, recently by learning to write Python3 
 2018.1.30
 上传新项目 movie250Spider.py(爬取豆瓣top250电影信息)
 使用方法：requests,BeautifuSoap,codecs
+注意：使用codecs 换行符'\n'会失效，需要用'\r\n'
