@@ -13,6 +13,11 @@ Learn Python3 also have a period of time, recently by learning to write Python3 
 
 -------------------
 2018.1.29
-上传新的项目iaskSpider.py
+上传新的项目iaskSpider.py(爬取爱问知识人)
 解决：传入中文参数进url出现乱码问题；（url中是不允许出现中文字符的，这时候就改用urllib.parse.quote方法对中文字符进行转换。）
       优化正则表达式对内容的筛选
+
+-------------------------
+2018.1.30
+上传新项目 movie250Spider.py(爬取豆瓣top250电影信息)
+使用方法：requests,BeautifuSoap,codecs

@@ -1,5 +1,5 @@
 #!/user/bin/env python
-#encodding=utf-8
+#encoding=utf-8
 
 '''
 目标：利用requests库和beautifulSoap爬取豆瓣top250电影信息(名字、评分、链接、简介)
@@ -8,7 +8,8 @@
 '''
 
 import requests
-from bs4 import beautifulSoup4
+from bs4 import BeautifulSoup
+import codecs
 
 BASE_URL = r'http://movie.douban.com/top250/'
 
@@ -21,12 +22,12 @@ def getPage(url):
 #传入页码，筛选需要的信息
 def getContent(data):
 	#初始化soup实例对象
-	soup = BeautifulSoup4(data)
+	soup = BeautifulSoup(data,'lxml')
 	#找出ol
 	movie_list_soup = soup.find('ol',attrs={'class':'grid_view'})
 	#初始化一个用于存放所有电影信息的libaray
 	libaray = []
-	for item in movie_list_soup:
+	for item in movie_list_soup.find_all('li'):
 		#从ol中取出详情
 		detail = item.find('div',attrs={'class':'info'})
 		#取出名字
@@ -35,18 +36,38 @@ def getContent(data):
 		movie_score = detail.find('span',attrs={'class':'rating_num'}).getText()
 		#取出链接
 		movie_url = detail.find('a').get('href')
-		#取出简介
-		movie_comment = detail.find('span',attrs={'class':'inq'}).getText()
+		#取出简介,有些没有简介，需要做非空判断
+		if detail.find('span',attrs={'class':'inq'}) != None:
+			movie_comment = detail.find('span',attrs={'class':'inq'}).getText()
+		else:
+			movie_comment = 'None Comment'
 		#把四项信息组成一个tuple，传入libaray
 		data_tuple = (movie_name,movie_score,movie_url,movie_comment)
 		libaray.append(data_tuple)
 
 	#进入下一页
-	next_page = soup.find('span',attrs={})
+	next_page = soup.find('span',attrs={'class':'next'}).find('a')
+	if next_page:
+		#返回libaray和下一页的url
+		return libaray,BASE_URL+next_page.get('href')
+	return libaray,None
 
 
+#程序入口
 def main():
-	print(getPage(BASE_URL))
+	url = BASE_URL
+	with codecs.open(r'C:/Users/LENOVO/Desktop/topMovies250.txt','w+',encoding='utf-8') as fp:
+		while url:
+			data = getPage(url)
+			informations,url = getContent(data)
+			for item in informations:
+				info_str = "电影名称: %s \r\n 电影评分: %s \r\n 地址: %s \r\n 简介: %s \r\n"%(item[0],item[1],item[2],item[3])
+				try:
+					fp.write(info_str+'\r\n')
+				except IOError as e:
+					print(e.reason)
+		fp.close()
+
 
 if __name__ =='__main__':
 	main()
