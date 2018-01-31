@@ -61,7 +61,7 @@ class bdtbSpider(object):
 			response = urllib.request.urlopen(request)
 			#返回该页面html内容
 			return response.read().decode('utf-8')
-		except urllib.URLError as e:
+		except urllib.request.URLError as e:
 			if hasattr(e,'reason'):
 				print(r'连接错误:',e.reason)
 				return None
