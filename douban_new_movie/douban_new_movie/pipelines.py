@@ -23,7 +23,6 @@ class DoubanNewMoviePipeline(object):
 		#去掉电影名字中的多余标签
 		pattern = re.compile(r'<a.*?>|<sp.*?>|</span.*?a>|\\n')
 		
-		#不能用movie_name的长度，有空格
 		for i in range(len(item['movie_name'])):
 			movie_name = {'movie_name':str(item['movie_name'][i]).replace(' ','')}
 			movie_name = re.sub(pattern,"",str(movie_name))
