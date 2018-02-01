@@ -33,3 +33,4 @@ Learn Python3 also have a period of time, recently by learning to write Python3 
 ---------------------------------
 2018.2.1
 上传新项目：使用Scrapy爬取豆瓣新电影排行(douban_new_movie)
+遇到的问题：豆瓣有反爬措施，需要伪装成浏览器，在settings.py中设置User_Agent
