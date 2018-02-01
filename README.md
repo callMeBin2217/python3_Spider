@@ -29,3 +29,7 @@ Learn Python3 also have a period of time, recently by learning to write Python3 
 --------------------------------
 2018.1.31
 上传新项目： 百度贴吧进阶版爬虫(bdtbSpider2.py) 爬取某个关键词贴吧首页所有帖子和内容
+
+---------------------------------
+2018.2.1
+上传新项目：使用Scrapy爬取豆瓣新电影排行(douban_new_movie)
