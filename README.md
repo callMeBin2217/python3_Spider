@@ -38,3 +38,7 @@ Learn Python3 also have a period of time, recently by learning to write Python3 
 -----------------------------------
 2018.2.2
 上传新项目：使用urllib,urllib.request爬取豆瓣人物影集中的图片(douban_imageSpider.py)(单页)
+
+-----------------------------------
+2018.2.3
+上传新项目:使用词云，结巴分词，BeautifulSoup,requests爬取豆瓣电影影评220条并形成词云wordCloudText.py(暂时无法突破豆瓣11页以后内容的封锁，后续会继续研究) 
