@@ -48,10 +48,10 @@ def getContent(pageData):
 def clearData():
 	new_contents =[]
 	new_info =''
-	with codecs.open(r'C:/Users/SleepAutumnD/Desktop/secretStar2.txt','w+',encoding='utf-8') as fp:
-		for i in range(240,300,20):
+	with codecs.open(r'C:/Users/LENOVO/Desktop/secretStar2.txt','w+',encoding='utf-8') as fp:
+		for i in range(0,300,20):
+			time.sleep(30)
 			pagedata = getPage(i)
-			time.sleep(20)
 			content = getContent(pagedata)
 			#print(content)
 			for item in content:
@@ -74,6 +74,7 @@ def clearData():
 -----------------------------------------
 制作词云部分
 '''
+'''
 def makeWordCloud():
 	with open(r'C:/Users/SleepAutumnD/Desktop/secretStar2.txt','r',encoding='utf-8') as f:
 		data = f.read()
@@ -90,7 +91,7 @@ def makeWordCloud():
 	#用词云进行显示
 	back_img = plt.imread(r'C:/Users/SleepAutumnD/Desktop/color.jpg')
 	img_color = ImageColorGenerator(back_img)
-	wordcloud = WordCloud(mask=back_img,font_path='simhei.ttf',background_color='white',max_font_size=100,min_font_size=20,random_state=42)
+	wordcloud = WordCloud(max_words=2000,mask=back_img,font_path='simhei.ttf',background_color='white',max_font_size=100,min_font_size=20,random_state=42)
 	word_frequence = {x[0]:x[1] for x in words_stat.head(1000).values}
 
 
@@ -98,10 +99,10 @@ def makeWordCloud():
 	plt.axis('off')
 	plt.subplots_adjust(top=1,bottom=0,left=0,right=1,hspace=0,wspace=0)
 	plt.imshow(wordcloud.recolor(color_func=img_color))
-
+'''
 def main():
 	clearData()
-	makeWordCloud()
+	#makeWordCloud()
 
 if __name__ =='__main__':
 	main()
