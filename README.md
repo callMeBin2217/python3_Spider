@@ -42,3 +42,11 @@ Learn Python3 also have a period of time, recently by learning to write Python3 
 -----------------------------------
 2018.2.3
 上传新项目:使用词云，结巴分词，BeautifulSoup,requests爬取豆瓣电影影评220条并形成词云wordCloudText.py(暂时无法突破豆瓣11页以后内容的封锁，后续会继续研究) 
+
+--------------------------------------
+2018.2.5
+上传新项目：使用BeautifulSoup简单爬取知乎某问题下回答图片zhihuImageSimple.py(无法爬取JS加载的图片)
+
+-------------------------------------------
+2018.2.6
+上传新项目：使用selenium+Firefox+python3 爬取知乎某问题下回答的图片zhihuImage.py(可以爬取JS动态加载出来的图片)
