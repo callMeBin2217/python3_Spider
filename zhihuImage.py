@@ -20,10 +20,12 @@ from selenium.webdriver.common.action_chains import ActionChains
 
 class zhihuImageSpider():
 	def __init__(self):
-		self.BASE_URL = r'https://www.zhihu.com/question/59408786'
+		self.BASE_URL = r'https://www.zhihu.com/question/36059311'#爬女神新垣结衣
 		self.driver = webdriver.Firefox()
 		#设置USER-AGENT
-		'''不知道为什么一用phantomJS 就会抛出 'NoneType' object is not subscriptable 异常'''
+		'''不知道为什么一用phantomJS 就会抛出 'NoneType' object is not subscriptable 异常
+			
+		'''
 		#self.dict_list = dict(DesiredCapabilities.PHANTOMJS)
 		#self.dict_list['phantomjs.page.settings.userAgent']=r'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36'
 		#self.driver = webdriver.PhantomJS() #初始化PhantomJS
@@ -85,7 +87,7 @@ class zhihuImageSpider():
 		try:
 			page = self.getPage()
 			imgs = self.getImage(page)
-			#self.saveToDir(imgs)
+			self.saveToDir(imgs)
 		except Exception as e:
 			print(e)
 		finally:
