@@ -42,13 +42,45 @@ class zhihuImageSpider():
 		try:
 			self.driver.get(self.BASE_URL)
 			time.sleep(20)#设置等待时间，等driver完全加载
-			#设置JS，滑动到底部
-			js = 'var q=document.documentElement.scrollTop=100000000'#自己调，还未找到可行办法，直达底部
-			self.driver.execute_script(js)#加载JS
-			time.sleep(60)
+			while (is_exit_btn1() or is_exit_btn2() or is_exit_btn3())==False:
+				#设置JS，滑动到底部
+				js = 'var q=document.documentElement.scrollTop=100000000'#自己调，还未找到可行办法，直达底部
+				self.driver.execute_script(js)#加载JS
+				time.sleep(20)
 		except Exception as e:
 			print(e)
 		return self.driver.page_source
+
+	'''经过观察发现，在知乎上，一个问题的回答如果到底部就会出现两种按钮。我猜想有三种可能
+		1.还未结束回答的，就会有'写回答'和'xx个回答被折叠'这两个按钮
+		2.结束回答的，就会有'XX个回答被折叠'
+		3.结束回答的，但什么按钮都没有
+	'''
+	#情况一
+	def is_exit_btn1(self):
+		try:
+			btn = self.driver.find_element_by_xpath("//div[@class='Card']/button")
+			return True
+		except:
+			return False
+
+	#情况二
+	def is_exit_btn2(self):
+		try:
+			btn = self.driver.find_element_by_xpath("//div[@class='CollapsedAnswers-bar']/button")
+			return True
+		except:
+			return False
+
+	#情况三
+	def is_exit_btn3(self):
+		try:
+			btn = WebDriverWait(self.driver,30).until(lambda x:x.find_element_by_xpath("//div[@class='CollapsedAnswers-bar']/button"))
+			return False
+		except :
+			return True
+			
+
 
 
 	def getImage(self,data):
