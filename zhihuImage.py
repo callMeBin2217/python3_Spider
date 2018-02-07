@@ -42,7 +42,7 @@ class zhihuImageSpider():
 		try:
 			self.driver.get(self.BASE_URL)
 			time.sleep(20)#设置等待时间，等driver完全加载
-			while (is_exit_btn1() or is_exit_btn2() or is_exit_btn3())==False:
+			while (self.is_exit_btn1() or self.is_exit_btn2() or self.is_exit_btn3())==False:
 				#设置JS，滑动到底部
 				js = 'var q=document.documentElement.scrollTop=100000000'#自己调，还未找到可行办法，直达底部
 				self.driver.execute_script(js)#加载JS
