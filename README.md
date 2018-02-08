@@ -50,3 +50,7 @@ Learn Python3 also have a period of time, recently by learning to write Python3 
 -------------------------------------------
 2018.2.6
 上传新项目：使用selenium+Firefox+python3 爬取知乎某问题下回答的图片zhihuImage.py(可以爬取JS动态加载出来的图片)
+
+----------------------------------------------
+2018.2.8
+更新项目：zhihuImage.py  实现自动判断是否已经到达底部

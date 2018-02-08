@@ -20,7 +20,10 @@ from selenium.webdriver.common.action_chains import ActionChains
 
 class zhihuImageSpider():
 	def __init__(self):
-		self.BASE_URL = r'https://www.zhihu.com/question/36059311'#爬女神新垣结衣
+		self.flag = False #设置循环中断标记
+		#https://www.zhihu.com/question/39162747
+		#https://www.zhihu.com/question/36059311
+		self.BASE_URL = r'https://www.zhihu.com/question/22070147'#爬女神新垣结衣
 		self.driver = webdriver.Firefox()
 		#设置USER-AGENT
 		'''不知道为什么一用phantomJS 就会抛出 'NoneType' object is not subscriptable 异常
@@ -36,17 +39,19 @@ class zhihuImageSpider():
 		'''
 		由于知乎问题下答案使用下拉滚条动态加载内容，所以先要把滚条
 		下拉到底部再一次性获取页面内容
-		PS.由于知乎某些问题下回答太多，单单一条JS语句难以到达最底部，加载所有回答
 		'''
 		#获取网页
 		try:
 			self.driver.get(self.BASE_URL)
 			time.sleep(20)#设置等待时间，等driver完全加载
-			while (self.is_exit_btn1() or self.is_exit_btn2() or self.is_exit_btn3())==False:
-				#设置JS，滑动到底部
-				js = 'var q=document.documentElement.scrollTop=100000000'#自己调，还未找到可行办法，直达底部
-				self.driver.execute_script(js)#加载JS
-				time.sleep(20)
+			while (self.is_exit_btn1() or self.is_exit_btn2())==False:
+				if self.is_exit_btn3()==False:
+					#设置JS，滑动到底部
+					js = 'var q=document.documentElement.scrollTop=100000000'
+					self.driver.execute_script(js)#加载JS
+					time.sleep(20)
+				else:
+					break
 		except Exception as e:
 			print(e)
 		return self.driver.page_source
@@ -72,13 +77,12 @@ class zhihuImageSpider():
 		except:
 			return False
 
-	#情况三
+	#情况三(当前面两个判断都为False时，等待30S后判断为已经到达底部)
 	def is_exit_btn3(self):
-		try:
-			btn = WebDriverWait(self.driver,30).until(lambda x:x.find_element_by_xpath("//div[@class='CollapsedAnswers-bar']/button"))
-			return False
-		except :
-			return True
+		if self.is_exit_btn1()==False and self.is_exit_btn2()==False:
+			self.flag==True
+		return self.flag
+
 			
 
 
@@ -124,7 +128,7 @@ class zhihuImageSpider():
 			print(e)
 		finally:
 			self.driver.quit()
-			
+			pass
 
 
 
