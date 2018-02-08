@@ -94,9 +94,10 @@ class zhihuImageSpider():
 		for item in content_list.find_all('figure'):
 			img = item.find('img')['src']
 			img_list.append(img)
-		print(len(img_list))
-		print(img_list)
-		return img_list
+		#print(len(img_list))
+		#print(img_list)
+		#print(len(list(set(img_list))))
+		return list(set(img_list)) #去重
 
 	def saveToDir(self,contents):
 	#设置图片名
@@ -128,7 +129,7 @@ class zhihuImageSpider():
 			print(e)
 		finally:
 			self.driver.quit()
-			pass
+			#pass
 
 
 
