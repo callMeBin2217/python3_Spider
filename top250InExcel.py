@@ -13,8 +13,10 @@ import codecs
 import re
 #excel需要用到的模块
 import xlwt
+import getpass
 
 BASE_URL = r'http://movie.douban.com/top250/'
+sys_userName = getpass.getuser()
 
 #返回页面内容
 def getPage(url):
@@ -76,7 +78,7 @@ def saveToExcel(informations):
 		for j in range(0,len(item)):
 			sheet.write(i,j,item[j])
 		i=i+1	
-	file_excel.save(r'C:/Users/SleepAutumnD/Desktop/topMovies250.xlsx')
+	file_excel.save(r'C:/Users/'+sys_userName+'/Desktop/topMovies250.xls')
 
 
 #程序入口
