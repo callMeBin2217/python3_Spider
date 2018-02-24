@@ -15,13 +15,14 @@ import chardet
 import sys
 import codecs
 import getpass
+import time
 
 class EncrypUtil():
 	def __init__(self):
 		pass
 
-	def createSecretKey(self,size):
-		return (''.join(map(lambda x:(hex(ord(x))[2:]),os.urandom(size))))[0:size]
+	def createSecretKey(self,size=16):
+		return (''.join(map(lambda xx:(hex(ord(xx))[2:]),str(os.urandom(size)))))[0:size]
 
 	def aesEncrypt(self,text,secKey):
 		pad = 16-len(text)%16
@@ -33,7 +34,8 @@ class EncrypUtil():
 
 	def rsaEncrypt(self,text,pubKey,modulus):
 		text = text[::-1]
-		rs = int(text.encode('hex'),16)**int(pubKey,16)%int(modulus,16)
+		tempHex = codecs.encode(text.encode('utf-8'),'hex')
+		rs = int(tempHex,16)**int(pubKey,16)%int(modulus,16)
 		return format(rs,'x').zfill(256)
 
 	def timeStamp(self,timeNum):
@@ -45,6 +47,8 @@ class EncrypUtil():
 
 class wangyiSpider(object):
 	def __init__(self,id):
+		#初始化一个commentList用于保存爬取下来的评论
+		self.commentList = []
 		self.sys_name = getpass.getuser()
 		self.modulus = r'00e0b509f6259df8642dbc35662901477df22677ec152b5ff68ace615bb7b725152b3ab17a876aea8a5aa76d2e417629ec4ee341f56135fccf695280104e0312ecbda92557c93870114af6c9d05c4f7f0c3685b7a46bee255932575cce10b424d813cfe4875d3e82047b97ddef52741d546b8e289dc6935b3ece0462db0a22b8e7'
 		self.nonce = r'0CoJUm6Qyw8W8jud'
@@ -52,7 +56,7 @@ class wangyiSpider(object):
 		self.encryptUtil = EncrypUtil()
 		self.secKey = self.encryptUtil.createSecretKey(16)
 		#先生成16位密钥，进行RSA加密
-		self.encSecKey = self.encryptUtil.rsaEncrypt(self.secKey,pubKey,modulus)
+		self.encSecKey = self.encryptUtil.rsaEncrypt(self.secKey,self.pubKey,self.modulus)
 		#需要爬取的音乐ID
 		self.musicId = id
 		self.BASE_URL = r"http://music.163.com/weapi/v1/resource/comments/R_SO_4_%d/"%int(self.musicId)
@@ -72,6 +76,7 @@ class wangyiSpider(object):
 
 		}
 
+
 	#获取评论
 	def getComment(self,offset):  
 		text= {
@@ -82,7 +87,7 @@ class wangyiSpider(object):
 		}
 		text = json.dumps(text)
 		#进行两次AES加密
-		encText = self.encryptUtil.aesEncrypt(self.encryptUtil.aesEncrypt(text,self.nonce),self.secKey)
+		encText = self.encryptUtil.aesEncrypt(self.encryptUtil.aesEncrypt(text,self.nonce).decode('utf-8'),self.secKey)
 		data = {
 			'params':encText,
 			'encSecKey':self.encSecKey
@@ -96,43 +101,41 @@ class wangyiSpider(object):
 	#保存评论到文件
 	def saveToFile(self,jsonData):
 		for c in jsonData['comments']:
-			cdata = {
-				'id':str(c['commentId']),
-				'user':str(c['User']['userId']),
-				'contnt': c['content'],
-				'likeCount':str(c['likedCount']),
-				'commentTime':str(self.encryptUtil.timeStamp(c['time'])),
-				'musicId':str(self.musicId)
-			}
-			udata = {
-				'id':str(c['user']['userId']),
-				'username':c['user']['nickname'],
-				'avatarUrl':c['user']['avatarUrl']
-			}
+			#构造tuple 保存评论数和点赞数
+			tempTuple = (c['content'].strip(),c['likedCount'])
+			self.commentList.append(tempTuple)
+		'''
+		with codecs.open(r'C:/Users/'+self.sys_name+'/Desktop/wyComment.txt','w+',encoding='utf-8') as fp:
+			for i in self.commentList:
+				fp.write(i[0]+'  '+str(i[1])+' \r\n ')'''
 
-			if not c['beReplied'] ==[]:
-				cdata['reComment'] = str(c["beReplied"][0]["user"]["userId"])
-
-			with codecs.open(r'C:/Users/'+self.sys_name+'/Desktop/wyComment.txt','w+',encoding='utf-8') as fp:
-				fp.write(c['content']+'\n')
+	
 
 	def process(self,offset):
 		if offset == -1:
 			return
 		off = offset
 		total = self.getComment(off)
-		print('评论的总数: '+total)
+		print('评论的总数: '+str(total))
 		while off<total:
 			off +=10
+			time.sleep(1)
 			self.getComment(off)
 
+		self.commentList=sorted(self.commentList,key=lambda x:x[1],reverse=True)
+		with codecs.open(r'C:/Users/'+self.sys_name+'/Desktop/wyComment.txt','w+',encoding='utf-8') as fp:
+			for i in self.commentList:
+				fp.write(i[0]+'  '+str(i[1])+' \r\n ')
+
+
 #默认歌曲‘白色球鞋’
-def main(id=65546):
+def main(id='65546'):
 	spider = wangyiSpider(id)
-	spider.process
+	spider.process(1)
 
 if __name__ == '__main__':
-	main(65546)
+	#id = '1607896'
+	main()
 
 
 
