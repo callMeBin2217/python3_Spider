@@ -16,6 +16,8 @@ import sys
 import codecs
 import getpass
 import time
+import ipPool
+from datetime import datetime
 
 class EncrypUtil():
 	def __init__(self):
@@ -49,6 +51,7 @@ class wangyiSpider(object):
 	def __init__(self,id):
 		#初始化一个commentList用于保存爬取下来的评论
 		self.commentList = []
+		self.count =1
 		self.sys_name = getpass.getuser()
 		self.modulus = r'00e0b509f6259df8642dbc35662901477df22677ec152b5ff68ace615bb7b725152b3ab17a876aea8a5aa76d2e417629ec4ee341f56135fccf695280104e0312ecbda92557c93870114af6c9d05c4f7f0c3685b7a46bee255932575cce10b424d813cfe4875d3e82047b97ddef52741d546b8e289dc6935b3ece0462db0a22b8e7'
 		self.nonce = r'0CoJUm6Qyw8W8jud'
@@ -77,6 +80,7 @@ class wangyiSpider(object):
 		}
 
 
+
 	#获取评论
 	def getComment(self,offset):  
 		text= {
@@ -92,22 +96,30 @@ class wangyiSpider(object):
 			'params':encText,
 			'encSecKey':self.encSecKey
 		}
-		recq = requests.post(self.BASE_URL,headers=self.headers,data=data)
+		ipSpider = ipPool()
+		proxies = ipSpider.get_random_ip(ipSpider.getIpList(ipSpider.getPage()))
+		recq = requests.post(self.BASE_URL,headers=self.headers,data=data,proxies=proxies)
 		jsonData = recq.json()
 		self.saveToFile(jsonData) #保存到文件
 		return int(jsonData['total'])
 
 
+
 	#保存评论到文件
 	def saveToFile(self,jsonData):
-		for c in jsonData['comments']:
-			#构造tuple 保存评论数和点赞数
-			tempTuple = (c['content'].strip(),c['likedCount'])
-			self.commentList.append(tempTuple)
-		'''
-		with codecs.open(r'C:/Users/'+self.sys_name+'/Desktop/wyComment.txt','w+',encoding='utf-8') as fp:
-			for i in self.commentList:
-				fp.write(i[0]+'  '+str(i[1])+' \r\n ')'''
+		try:
+			for c in jsonData['comments']:
+				#构造tuple 保存评论数和点赞数
+				tempTuple = (c['content'].strip(),c['likedCount'])
+				self.commentList.append(tempTuple)
+		except Exception as e:
+			self.commentList=sorted(self.commentList,key=lambda x:x[1],reverse=True)
+			with codecs.open(r'C:/Users/'+self.sys_name+'/Desktop/wyComment2.txt','w+',encoding='utf-8') as fp:
+				for i in self.commentList:
+					print('正在写入第 '+str(self.count)+' 条信息')
+					fp.write(i[0]+'  '+str(i[1])+'\r\n ')
+					self.count+=1
+			print(e)
 
 	
 
@@ -117,15 +129,23 @@ class wangyiSpider(object):
 		off = offset
 		total = self.getComment(off)
 		print('评论的总数: '+str(total))
-		while off<total:
-			off +=10
-			time.sleep(1)
-			self.getComment(off)
+		if total <10000:
+			while off<total:
+				off +=10
+				time.sleep(1)
+				self.getComment(off)
+		else:
+			while off<=10000:
+				off +=10
+				time.sleep(2)
+				self.getComment(off)
 
 		self.commentList=sorted(self.commentList,key=lambda x:x[1],reverse=True)
-		with codecs.open(r'C:/Users/'+self.sys_name+'/Desktop/wyComment.txt','w+',encoding='utf-8') as fp:
+		with codecs.open(r'C:/Users/'+self.sys_name+'/Desktop/wyComment2.txt','w+',encoding='utf-8') as fp:
 			for i in self.commentList:
-				fp.write(i[0]+'  '+str(i[1])+' \r\n ')
+				print('正在写入第 '+str(self.count)+' 条信息')
+				fp.write(i[0]+'  '+str(i[1])+'\r\n ')
+				self.count+=1
 
 
 #默认歌曲‘白色球鞋’
@@ -133,9 +153,10 @@ def main(id='65546'):
 	spider = wangyiSpider(id)
 	spider.process(1)
 
+
 if __name__ == '__main__':
-	#id = '1607896'
-	main()
+	id = '468513829'
+	main(id)
 
 
 
