@@ -17,7 +17,6 @@ import codecs
 import getpass
 import time
 import ipPool
-from datetime import datetime
 
 class EncrypUtil():
 	def __init__(self):
@@ -97,12 +96,14 @@ class wangyiSpider(object):
 			'encSecKey':self.encSecKey
 		}
 		ipSpider = ipPool()
-		proxies = ipSpider.get_random_ip(ipSpider.getIpList(ipSpider.getPage()))
-		recq = requests.post(self.BASE_URL,headers=self.headers,data=data,proxies=proxies)
+		ipList = ipSpider.getIpList(ipSpider.getPage())
+		recq = requests.post(self.BASE_URL,headers=self.headers,data=data,proxies=ipSpider.get_random_ip(ipList))
 		jsonData = recq.json()
-		self.saveToFile(jsonData) #保存到文件
-		return int(jsonData['total'])
-
+		if jsonData.get('msg',"")=="":
+			self.saveToFile(jsonData) #保存到文件
+			return int(jsonData['total'])
+		else:
+			recq = requests.post(self.BASE_URL,headers=self.headers,data=data,proxies=ipSpider.get_random_ip(ipList))
 
 
 	#保存评论到文件
@@ -113,7 +114,6 @@ class wangyiSpider(object):
 				tempTuple = (c['content'].strip(),c['likedCount'])
 				self.commentList.append(tempTuple)
 		except Exception as e:
-			self.commentList=sorted(self.commentList,key=lambda x:x[1],reverse=True)
 			with codecs.open(r'C:/Users/'+self.sys_name+'/Desktop/wyComment2.txt','w+',encoding='utf-8') as fp:
 				for i in self.commentList:
 					print('正在写入第 '+str(self.count)+' 条信息')
@@ -140,7 +140,6 @@ class wangyiSpider(object):
 				time.sleep(2)
 				self.getComment(off)
 
-		self.commentList=sorted(self.commentList,key=lambda x:x[1],reverse=True)
 		with codecs.open(r'C:/Users/'+self.sys_name+'/Desktop/wyComment2.txt','w+',encoding='utf-8') as fp:
 			for i in self.commentList:
 				print('正在写入第 '+str(self.count)+' 条信息')
@@ -152,7 +151,6 @@ class wangyiSpider(object):
 def main(id='65546'):
 	spider = wangyiSpider(id)
 	spider.process(1)
-
 
 if __name__ == '__main__':
 	id = '468513829'
