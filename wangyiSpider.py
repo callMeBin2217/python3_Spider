@@ -95,15 +95,18 @@ class wangyiSpider(object):
 			'params':encText,
 			'encSecKey':self.encSecKey
 		}
-		ipSpider = ipPool()
-		ipList = ipSpider.getIpList(ipSpider.getPage())
-		recq = requests.post(self.BASE_URL,headers=self.headers,data=data,proxies=ipSpider.get_random_ip(ipList))
+		recq = requests.post(self.BASE_URL,headers=self.headers,data=data)
 		jsonData = recq.json()
 		if jsonData.get('msg',"")=="":
 			self.saveToFile(jsonData) #保存到文件
 			return int(jsonData['total'])
 		else:
-			recq = requests.post(self.BASE_URL,headers=self.headers,data=data,proxies=ipSpider.get_random_ip(ipList))
+			print('this is else')
+			ipSpider = ipPool.ipPool()
+			proxies = ipSpider.get_random_ip(ipSpider.getIpList(ipSpider.getPage()))
+			recq = requests.post(self.BASE_URL,headers=self.headers,data=data,proxies=proxies)
+			jsonData = recq.json()
+			self.saveToFile(jsonData) #保存到文件
 
 
 	#保存评论到文件
@@ -129,13 +132,13 @@ class wangyiSpider(object):
 		off = offset
 		total = self.getComment(off)
 		print('评论的总数: '+str(total))
-		if total <10000:
+		if total <20000:
 			while off<total:
 				off +=10
 				time.sleep(1)
 				self.getComment(off)
 		else:
-			while off<=10000:
+			while off<=20000:
 				off +=10
 				time.sleep(2)
 				self.getComment(off)
