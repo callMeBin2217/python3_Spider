@@ -15,7 +15,7 @@ class ipPool(object):
 		self.headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36'
     	}
-    	#self.ipList=[]
+    	self.ipList=[]
 
 
 	#获取首页所有内容
@@ -36,11 +36,10 @@ class ipPool(object):
 			tempUrl = str.lower(info_td[5].text)+'://'+info_td[1].text+':'+info_td[2].text
 			#print(tempUrl)
 			tempInfo = (str.lower(info_td[5].text),tempUrl) #返回样例 (http,http://192.168.1.1:80)
-			ipList=[]
-			ipList.append(tempInfo)
+			#ipList.append(tempInfo)
 			#print(ipList)
-			#self.ipList.append(tempInfo)
-		return ipList
+			self.ipList.append(tempInfo)
+		return self.ipList
 
 		#随机返回一个Ip
 	def get_random_ip(self,ipList):

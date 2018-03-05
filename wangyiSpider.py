@@ -117,7 +117,7 @@ class wangyiSpider(object):
 				tempTuple = (c['content'].strip(),c['likedCount'])
 				self.commentList.append(tempTuple)
 		except Exception as e:
-			with codecs.open(r'C:/Users/'+self.sys_name+'/Desktop/wyComment2.txt','w+',encoding='utf-8') as fp:
+			with codecs.open(r'C:/Users/'+self.sys_name+'/Desktop/wyComment3.txt','w+',encoding='utf-8') as fp:
 				for i in self.commentList:
 					print('正在写入第 '+str(self.count)+' 条信息')
 					fp.write(i[0]+'  '+str(i[1])+'\r\n ')
@@ -132,18 +132,18 @@ class wangyiSpider(object):
 		off = offset
 		total = self.getComment(off)
 		print('评论的总数: '+str(total))
-		if total <20000:
+		if total <80000:
 			while off<total:
 				off +=10
-				time.sleep(1)
+				time.sleep(3)
 				self.getComment(off)
 		else:
-			while off<=20000:
+			while off<=100000:
 				off +=10
-				time.sleep(2)
+				time.sleep(3)
 				self.getComment(off)
 
-		with codecs.open(r'C:/Users/'+self.sys_name+'/Desktop/wyComment2.txt','w+',encoding='utf-8') as fp:
+		with codecs.open(r'C:/Users/'+self.sys_name+'/Desktop/wyComment3.txt','w+',encoding='utf-8') as fp:
 			for i in self.commentList:
 				print('正在写入第 '+str(self.count)+' 条信息')
 				fp.write(i[0]+'  '+str(i[1])+'\r\n ')
@@ -156,7 +156,7 @@ def main(id='65546'):
 	spider.process(1)
 
 if __name__ == '__main__':
-	id = '468513829'
+	id = '526464293'
 	main(id)
 
 
