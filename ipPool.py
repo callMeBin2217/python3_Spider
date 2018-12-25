@@ -44,7 +44,7 @@ class ipPool(object):
 		#随机返回一个Ip
 	def get_random_ip(self,ipList):
 		pro = random.choice(ipList)
-		proxies={pro[0]:pro[1]}
+		proxies=pro[1]
 		return proxies
 
 
@@ -53,6 +53,7 @@ if __name__ == '__main__':
 	spider = ipPool()
 	page = spider.getPage()
 	ipList=spider.getIpList(page)
+	print(ipList)
 	proxies = spider.get_random_ip(ipList)
 	print(proxies)
 
